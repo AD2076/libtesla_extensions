@@ -5,7 +5,10 @@
 #define SECTION_BIG_SIZE(height) (((height - 73 - 80) / 3) * 2)
 #define SECTION_SMALL_SIZE(height) ((height - 73 - 80) / 3)
 
-namespace tsl {
+using namespace tsl;
+using namespace tsl::elm;
+
+namespace tslext {
     
     namespace style {
         namespace color {
@@ -25,7 +28,7 @@ namespace tsl {
             BigCategoryHeader(const std::string &title, bool hasSeparator = false) : ListItem(title), m_hasSeparator(hasSeparator) {}
             virtual ~BigCategoryHeader() {}
 
-            virtual void draw(gfx::Renderer *renderer) override {
+            virtual void draw(tsl::gfx::Renderer *renderer) override {
                 renderer->drawRect(this->getX() - 2, this->getY() + 12 , 5, this->getHeight() - 24, a(tsl::style::color::ColorHeaderBar));
                 renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, ELEMENT_BOTTOM_BOUND(this) - 24, 20, a(tsl::style::color::ColorText));
 
@@ -54,7 +57,7 @@ namespace tsl {
             CustomCategoryHeader(const std::string &title, bool hasSeparator = false, bool alwaysSmall = false) : ListItem(title), m_hasSeparator(hasSeparator), m_alwaysSmall(alwaysSmall) {}
             virtual ~CustomCategoryHeader() {}
 
-            virtual void draw(gfx::Renderer *renderer) override {
+            virtual void draw(tsl::gfx::Renderer *renderer) override {
                 renderer->drawRect(this->getX() - 2, ELEMENT_BOTTOM_BOUND(this) - 30, 5, 23, a(tsl::style::color::ColorHeaderBar));
                 renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, ELEMENT_BOTTOM_BOUND(this) - 12, 15, a(tsl::style::color::ColorText));
 
@@ -99,7 +102,7 @@ namespace tsl {
             }
             virtual ~SmallListItem() {}
 
-            virtual void draw(gfx::Renderer *renderer) override {
+            virtual void draw(tsl::gfx::Renderer *renderer) override {
                 if (this->m_touched && Element::getInputMode() == InputMode::Touch) {
                     renderer->drawRect(ELEMENT_BOUNDS(this), a(tsl::style::color::ColorClickAnimation));
                 }
@@ -353,7 +356,7 @@ namespace tsl {
                     delete this->m_bottomSection;
             }
 
-            virtual void draw(gfx::Renderer *renderer) override {
+            virtual void draw(tsl::gfx::Renderer *renderer) override {
                 renderer->fillScreen(a(tsl::style::color::ColorFrameBackground));
                 renderer->drawRect(tsl::cfg::FramebufferWidth - 1, 0, 1, tsl::cfg::FramebufferHeight, a(0xF222));
 

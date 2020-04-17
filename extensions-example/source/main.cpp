@@ -8,16 +8,16 @@ public:
     GuiDoubleLayout1() {}
 
     virtual tsl::elm::Element* createUI() override {
-        auto *rootFrame = new tsl::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 1", tsl::SectionsLayout::big_bottom, true);
+        auto *rootFrame = new tslext::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 1", tslext::SectionsLayout::big_bottom, true);
         auto *top_list = new tsl::elm::List();
         auto *bottom_list = new tsl::elm::List();
 
         for (int i = 0; i < 10; i++) {
-            top_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));
+            top_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));
         }
 
         for (int i = 0; i < 10; i++) {
-            bottom_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));
+            bottom_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));
         }
 
         rootFrame->setTopSection(top_list);
@@ -32,16 +32,16 @@ public:
     GuiDoubleLayout2() {}
 
     virtual tsl::elm::Element* createUI() override {
-        auto *rootFrame = new tsl::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 2", tsl::SectionsLayout::same, true);
+        auto *rootFrame = new tslext::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 2", tslext::SectionsLayout::same, true);
         auto *top_list = new tsl::elm::List();
         auto *bottom_list = new tsl::elm::List();
 
         for (int i = 0; i < 10; i++) {
-            top_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));   
+            top_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));   
         }
 
         for (int i = 0; i < 10; i++) {
-            bottom_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));
+            bottom_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));
         }
 
         rootFrame->setTopSection(top_list);
@@ -56,16 +56,16 @@ public:
     GuiDoubleLayout3() {}
 
     virtual tsl::elm::Element* createUI() override {
-        auto *rootFrame = new tsl::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 3", tsl::SectionsLayout::big_top, true);
+        auto *rootFrame = new tslext::elm::DoubleSectionOverlayFrame("Tesla Extensions Example", "Double Section Gui 3", tslext::SectionsLayout::big_top, true);
         auto *top_list = new tsl::elm::List();
         auto *bottom_list = new tsl::elm::List();
 
         for (int i = 0; i < 10; i++) {
-            top_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));
+            top_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));
         }
 
         for (int i = 0; i < 10; i++) {
-            bottom_list->addItem(new tsl::elm::SmallListItem("Small List Item " + std::to_string(i)));
+            bottom_list->addItem(new tslext::elm::SmallListItem("Small List Item " + std::to_string(i)));
         }
 
         rootFrame->setTopSection(top_list);
@@ -91,17 +91,17 @@ public:
 
         // List Items
         // A Bigger Category Header
-        list->addItem(new tsl::elm::BigCategoryHeader("Big Category Header"));
+        list->addItem(new tslext::elm::BigCategoryHeader("Big Category Header"));
 
         // Category header with text, separator, alwaysSmall
         // Standard Category header is small only when it's first item in list. With this you can choose
-        list->addItem(new tsl::elm::CustomCategoryHeader("Custom Category Header", true, true));
+        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", true, true));
 
         // Category header with text and without separator and alwaysSmall
         // Standard Category header is small only when it's first item in list. With this you can choose
-        list->addItem(new tsl::elm::CustomCategoryHeader("Custom Category Header", false, false));       
+        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", false, false));       
 
-        auto *doubleSection1 = new tsl::elm::SmallListItem("Double Section");
+        auto *doubleSection1 = new tslext::elm::SmallListItem("Double Section");
         //set standard value, highlight color
         doubleSection1->setValue("1:3 / 2:3");
 
@@ -115,7 +115,7 @@ public:
         });
         list->addItem(doubleSection1);
         
-        auto *doubleSection2 = new tsl::elm::SmallListItem("Double Section");
+        auto *doubleSection2 = new tslext::elm::SmallListItem("Double Section");
         //set faint value, description color
         doubleSection2->setValue("1/2 : 1/2", true);
 
@@ -129,9 +129,9 @@ public:
         });
         list->addItem(doubleSection2);
 
-        auto *doubleSection3 = new tsl::elm::SmallListItem("Double Section");
+        auto *doubleSection3 = new tslext::elm::SmallListItem("Double Section");
         //set colored value, choose your color
-        doubleSection3->setColoredValue("2/3 : 1/3", tsl::style::color::ColorWarning);
+        doubleSection3->setColoredValue("2/3 : 1/3", tslext::style::color::ColorWarning);
         doubleSection3->setClickListener([](u64 keys) { 
             if (keys & KEY_A) {
                 tsl::changeTo<GuiDoubleLayout3>();
