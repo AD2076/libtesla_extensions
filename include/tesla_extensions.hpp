@@ -12,7 +12,7 @@ namespace tslext {
     
     namespace style {
         namespace color {
-            constexpr u16 ColorWarning          = 0xF77F;
+            constexpr Color ColorWarning          = { 0xF, 0x7, 0x7, 0xF };   ///< Text red warning color
         }
     }
 
@@ -29,11 +29,11 @@ namespace tslext {
             virtual ~BigCategoryHeader() {}
 
             virtual void draw(tsl::gfx::Renderer *renderer) override {
-                renderer->drawRect(this->getX() - 2, this->getY() + 12 , 5, this->getHeight() - 24, a(tsl::style::color::ColorHeaderBar));
-                renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, ELEMENT_BOTTOM_BOUND(this) - 24, 20, a(tsl::style::color::ColorText));
+                renderer->drawRect(this->getX() - 2, this->getBottomBound() - 50, 5, this->getHeight() - 30, a(tsl::style::color::ColorHeaderBar));
+                renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, this->getBottomBound() - 24, 20, a(tsl::style::color::ColorText));
 
                 if (this->m_hasSeparator)
-                    renderer->drawRect(this->getX(), ELEMENT_BOTTOM_BOUND(this), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
+                    renderer->drawRect(this->getX(), this->getBottomBound() , this->getWidth(), 1, a(tsl::style::color::ColorFrame));
             }
 
             virtual void layout(u16 parentX, u16 parentY, u16 parentWidth, u16 parentHeight) override {
@@ -58,11 +58,11 @@ namespace tslext {
             virtual ~CustomCategoryHeader() {}
 
             virtual void draw(tsl::gfx::Renderer *renderer) override {
-                renderer->drawRect(this->getX() - 2, ELEMENT_BOTTOM_BOUND(this) - 30, 5, 23, a(tsl::style::color::ColorHeaderBar));
-                renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, ELEMENT_BOTTOM_BOUND(this) - 12, 15, a(tsl::style::color::ColorText));
+                renderer->drawRect(this->getX() - 2, this->getBottomBound() - 30, 5, 23, a(tsl::style::color::ColorHeaderBar));
+                renderer->drawString(this->m_text.c_str(), false, this->getX() + 13, this->getBottomBound() - 12, 15, a(tsl::style::color::ColorText));
 
                 if (this->m_hasSeparator)
-                    renderer->drawRect(this->getX(), ELEMENT_BOTTOM_BOUND(this), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
+                    renderer->drawRect(this->getX(), this->getBottomBound(), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
             }
 
             virtual void layout(u16 parentX, u16 parentY, u16 parentWidth, u16 parentHeight) override {
@@ -90,6 +90,10 @@ namespace tslext {
             bool m_alwaysSmall;
         };
 
+        /**
+         * @brief A item that goes into a list
+         * 
+         */
         class SmallListItem : public Element {
         public:
             /**
@@ -102,7 +106,7 @@ namespace tslext {
             }
             virtual ~SmallListItem() {}
 
-            virtual void draw(tsl::gfx::Renderer *renderer) override {
+            virtual void draw(gfx::Renderer *renderer) override {
                 if (this->m_touched && Element::getInputMode() == InputMode::Touch) {
                     renderer->drawRect(ELEMENT_BOUNDS(this), a(tsl::style::color::ColorClickAnimation));
                 }
@@ -115,50 +119,48 @@ namespace tslext {
                         this->m_maxWidth = this->getWidth() - 40;
                     }
 
-                    size_t written = 0;
-                    renderer->drawString(this->m_text.c_str(), false, 0, 0, 15, tsl::style::color::ColorTransparent, this->m_maxWidth, &written);
-                    this->m_trunctuated = written < this->m_text.length();
+                    auto [width, height] = renderer->drawString(this->m_text.c_str(), false, 0, 0, 15, tsl::style::color::ColorTransparent);
+                    this->m_trunctuated = width > this->m_maxWidth;
 
                     if (this->m_trunctuated) {
-                        this->m_maxScroll = this->m_text.length() + 8;
-                        this->m_scrollText = this->m_text + "        " + this->m_text;
-                        this->m_ellipsisText = hlp::limitStringLength(this->m_text, written);
+                        this->m_scrollText = this->m_text + "        ";
+                        auto [width, height] = renderer->drawString(this->m_scrollText.c_str(), false, 0, 0, 15, tsl::style::color::ColorTransparent);
+                        this->m_scrollText += this->m_text;
+                        this->m_textWidth = width;
+                        this->m_ellipsisText = renderer->limitStringLength(this->m_text, false, 15, this->m_maxWidth);
+                    } else {
+                        this->m_textWidth = width;
                     }
                 }
 
                 renderer->drawRect(this->getX(), this->getY(), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
-                renderer->drawRect(this->getX(), ELEMENT_BOTTOM_BOUND(this), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
+                renderer->drawRect(this->getX(), this->getTopBound(), this->getWidth(), 1, a(tsl::style::color::ColorFrame));
 
-                const char *text = m_text.c_str();
                 if (this->m_trunctuated) {
                     if (this->m_focused) {
-                        if (this->m_scroll) {
-                            if ((this->m_scrollAnimationCounter % 20) == 0) {
-                                this->m_scrollOffset++;
-                                if (this->m_scrollOffset >= this->m_maxScroll) {
-                                    this->m_scrollOffset = 0;
-                                    this->m_scroll = false;
-                                    this->m_scrollAnimationCounter = 0;
-                                }
-                            }
-                            text = this->m_scrollText.c_str() + this->m_scrollOffset;
-                        } else {
-                            if (this->m_scrollAnimationCounter > 60) {
-                                this->m_scroll = true;
+                        renderer->enableScissoring(this->getX(), this->getY(), this->m_maxWidth + 40, this->getHeight());
+                        renderer->drawString(this->m_scrollText.c_str(), false, this->getX() + 20 - this->m_scrollOffset, this->getY() + 25, 15, tsl::style::color::ColorText);
+                        renderer->disableScissoring();
+                        if (this->m_scrollAnimationCounter == 90) {
+                            if (this->m_scrollOffset == this->m_textWidth) {
+                                this->m_scrollOffset = 0;
                                 this->m_scrollAnimationCounter = 0;
+                            } else {
+                                this->m_scrollOffset++;
                             }
+                        } else {
+                            this->m_scrollAnimationCounter++;
                         }
-                        this->m_scrollAnimationCounter++;
                     } else {
-                        text = this->m_ellipsisText.c_str();
+                        renderer->drawString(this->m_ellipsisText.c_str(), false, this->getX() + 20, this->getY() + 25, 15, a(tsl::style::color::ColorText));
                     }
+                } else {
+                    renderer->drawString(this->m_text.c_str(), false, this->getX() + 20, this->getY() + 25, 15, a(tsl::style::color::ColorText));
                 }
 
-                renderer->drawString(text, false, this->getX() + 20, this->getY() + 25, 15, a(tsl::style::color::ColorText), this->m_maxWidth);
-
-                renderer->drawString(this->m_value.c_str(), false, this->getX() + this->m_maxWidth + 45, this->getY() + 25, 15, a(this->m_color));
+                renderer->drawString(this->m_value.c_str(), false, this->getX() + this->m_maxWidth + 45, this->getY() + 25, 15, this->m_color);
             }
-
+            
             virtual void layout(u16 parentX, u16 parentY, u16 parentWidth, u16 parentHeight) override {
                 this->setBoundaries(this->getX(), this->getY(), this->getWidth(), tsl::style::ListItemDefaultHeight / 2);
             }
@@ -172,10 +174,9 @@ namespace tslext {
                 return Element::onClick(keys);
             }
 
-
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) override {
                 if (event == TouchEvent::Touch)
-                    this->m_touched = currX > ELEMENT_LEFT_BOUND(this) && currX < (ELEMENT_RIGHT_BOUND(this)) && currY > ELEMENT_TOP_BOUND(this) && currY < (ELEMENT_BOTTOM_BOUND(this));
+                    this->m_touched = this->inBounds(currX, currY);
                 
                 if (event == TouchEvent::Release && this->m_touched) {
                     this->m_touched = false;
@@ -191,13 +192,12 @@ namespace tslext {
                     
                 return false;
             }
-            
 
             virtual void setFocused(bool state) override {
                 this->m_scroll = false;
                 this->m_scrollOffset = 0;
                 this->m_scrollAnimationCounter = 0;
-                this->m_focused = state;
+                Element::setFocused(state);
             }
 
             virtual Element* requestFocus(Element *oldFocus, FocusDirection direction) override {
@@ -209,7 +209,7 @@ namespace tslext {
              * 
              * @param text Text
              */
-            virtual inline void setText(const std::string& text) {
+            inline void setText(const std::string& text) {
                 this->m_text = text;
                 this->m_scrollText = "";
                 this->m_ellipsisText = "";
@@ -222,7 +222,7 @@ namespace tslext {
              * @param value Text
              * @param color Color the text should be drawn, default is a glowing green
              */
-            virtual inline void setColoredValue(const std::string& value, u16 color = tsl::style::color::ColorHighlight) {
+            virtual inline void setColoredValue(const std::string& value, Color color = tsl::style::color::ColorHighlight) {
                 this->m_value = value;
                 this->m_color = color;
                 this->m_maxWidth = 0;
@@ -245,23 +245,43 @@ namespace tslext {
                 this->m_maxWidth = 0;
             }
 
-        protected:
-            std::string m_text;
-            std::string m_value = "";
-            std::string m_scrollText = "";
-            std::string m_ellipsisText = "";
+            /**
+             * @brief Gets the left hand description text of the list item
+             * 
+             * @return Text
+             */
+            inline const std::string& getText() const {
+                return this->m_text;
+            }
 
-            bool m_scroll = false;
-            bool m_trunctuated = false;
-            bool m_faint = false;
+            /**
+             * @brief Gets the right hand value text of the list item
+             * 
+             * @return Value
+             */
+            inline const std::string& getValue() {
+                return this->m_value;
+            }
 
-            bool m_touched = false;
+            protected:
+                std::string m_text;
+                std::string m_value = "";
+                std::string m_scrollText = "";
+                std::string m_ellipsisText = "";
 
-            u16 m_color = tsl::style::color::ColorHighlight;
-            u16 m_maxScroll = 0;
-            u16 m_scrollOffset = 0;
-            u32 m_maxWidth = 0;
-            u16 m_scrollAnimationCounter = 0;
+                bool m_scroll = false;
+                bool m_trunctuated = false;
+                bool m_faint = false;
+                
+                Color m_color = tsl::style::color::ColorHighlight;
+
+                bool m_touched = false;
+
+                u16 m_maxScroll = 0;
+                u16 m_scrollOffset = 0;
+                u32 m_maxWidth = 0;
+                u32 m_textWidth = 0;
+                u16 m_scrollAnimationCounter = 0; 
         };
 
         /**
@@ -446,13 +466,11 @@ namespace tslext {
 
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) {
                 // Discard touches outside bounds
-                if (currX > ELEMENT_LEFT_BOUND(this->m_bottomSection) && currX < ELEMENT_RIGHT_BOUND(this->m_bottomSection) &&
-                    currY > ELEMENT_TOP_BOUND(this->m_bottomSection) && currY < ELEMENT_BOTTOM_BOUND(this->m_bottomSection)) {
+                if (!this->m_bottomSection->inBounds(currX, currY)) {
                     if (this->m_bottomSection != nullptr)
                         return this->m_bottomSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
 
-                } else if (currX > ELEMENT_LEFT_BOUND(this->m_topSection) && currY < ELEMENT_RIGHT_BOUND(this->m_topSection) &&
-                    currY > ELEMENT_TOP_BOUND(this->m_topSection) && currY < ELEMENT_BOTTOM_BOUND(this->m_topSection)) {
+                } else if (this->m_topSection->inBounds(currX, currY)) {
                     if (this->m_topSection != nullptr)
                         return this->m_topSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
                 }

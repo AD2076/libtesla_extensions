@@ -91,15 +91,15 @@ public:
 
         // List Items
         // A Bigger Category Header
-        list->addItem(new tslext::elm::BigCategoryHeader("Big Category Header"));
-
-        // Category header with text, separator, alwaysSmall
+        list->addItem(new tslext::elm::BigCategoryHeader("Big Category Header", true));
+        
+        // Category header with text, with separator and without alwaysSmall
         // Standard Category header is small only when it's first item in list. With this you can choose
-        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", true, true));
-
-        // Category header with text and without separator and alwaysSmall
+        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", true, false));       
+        
+        // Category header with text, without separator and with alwaysSmall
         // Standard Category header is small only when it's first item in list. With this you can choose
-        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", false, false));       
+        list->addItem(new tslext::elm::CustomCategoryHeader("Custom Category Header", false, true));
 
         auto *doubleSection1 = new tslext::elm::SmallListItem("Double Section");
         //set standard value, highlight color
