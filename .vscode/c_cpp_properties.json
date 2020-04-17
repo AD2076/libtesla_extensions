@@ -7,7 +7,12 @@
                 "/opt/devkitpro/libnx/**",
                 "/opt/devkitpro/portlibs/switch/**"
             ],
-            "defines": [],
+            "defines": [
+                "SWITCH",
+                "VERSION=\"\"",
+                "__SWITCH__",
+                "__aarch64__"
+            ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
             ],
@@ -15,6 +20,46 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "DKP Aarch64 Windows",
+            "includePath": [
+                "C:/devkitPro/devkitA64/aarch64-none-elf/include/**",
+                "C:/devkitPro/devkitA64/lib/gcc/aarch64-none-elf/9.2.0/include/**",
+                "C:/devkitPro/libnx/include/**",
+                "C:/devkitPro/portlibs/switch/include/**",
+                "${workspaceFolder}/include/**"
+            ],
+            "defines": [
+                "SWITCH",
+                "VERSION=\"\"",
+                "__SWITCH__",
+                "__aarch64__"
+            ],
+            "compilerPath": "C:/devkitPro/devkitA64/bin/aarch64-none-elf-g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "DKP Aarch64 Linux",
+            "includePath": [
+                "/opt/devkitpro/devkitA64/aarch64-none-elf/include/**",
+                "/opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/9.2.0/include/**",
+                "/opt/devkitpro/libnx/include/**",
+                "/opt/devkitpro/portlibs/switch/include/**",
+                "${workspaceFolder}/include/**"
+            ],
+            "defines": [
+                "SWITCH",
+                "VERSION=\"\"",
+                "__SWITCH__",
+                "__aarch64__"
+            ],
+            "compilerPath": "/opt/devkitpro/devkitA64/bin/aarch64-none-elf-g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
         }
     ],
     "version": 4
