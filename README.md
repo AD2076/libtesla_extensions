@@ -4,7 +4,7 @@
 
 libtesla_extensions is a set of custom components for your Overlays. 
 While libtesla main goal is to make sure all overlays look and feel similar and don't differenciate themselves from the switch's native overlays, libtesla_extensions goal is to simplify the creation of custom, non switchish UIs 
-
+Look at this like a tesla kindergarten where new items meets the world and will eventually grow up inside libtesla
 </p>
 
 ## Example
