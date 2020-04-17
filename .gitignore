@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+*.ncap
+*.elf
+*.ovl
+
+debug
+release
+lib
+*.bz2
+
+extensions-example/build/
+
