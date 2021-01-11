@@ -466,13 +466,10 @@ namespace tslext {
 
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) {
                 // Discard touches outside bounds
-                if (!this->m_bottomSection->inBounds(currX, currY)) {
-                    if (this->m_bottomSection != nullptr)
-                        return this->m_bottomSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
-
-                } else if (this->m_topSection->inBounds(currX, currY)) {
-                    if (this->m_topSection != nullptr)
-                        return this->m_topSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
+                if (this->m_bottomSection != nullptr && this->m_bottomSection->inBounds(currX, currY)) {
+                    return this->m_bottomSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
+                } else if (this->m_topSection != nullptr && this->m_topSection->inBounds(currX, currY)) {
+                    return this->m_topSection->onTouch(event, currX, currY, prevX, prevY, initialX, initialY);
                 }
                 return false;
             }   
